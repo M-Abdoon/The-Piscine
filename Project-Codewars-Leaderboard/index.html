@@ -5,8 +5,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Codewars leaderboard</title>
 </head>
-<body>
-  
+<body bgcolor="#222">
+	<center>
+	<div style="width:900px; height:900px; background-color:#111; color: white;">
+	<h1>Codewars Leadserboard</h1>
+	<form>
+		<label for="usersInput">
+			Enter Usernames
+			<br>
+			<textarea name="usersInput" id="usersInput" placeholder="Enter Usernames.." cols="50">CodeYourFuture,40thieves,SallyMcGrath,M-Abdoon</textarea>
+		</label>
+		<br>
+		<label for="fetchBtn">
+			<input type="submit" name="sbmitUsers" id="submitUsers"></input>
+		</label>
+		<table cellspacing="0" cellpadding="10" width="900">
+			<tr style="background-color:#ccc; color:black;">
+				<th>ID</th>
+				<th>Name</th>
+				<th>Email</th>
+			</tr>
+			<tr style="background-color:#333; color:white;">
+				<td>2</td>
+				<td>Aisha</td>
+				<td>aisha@example.com</td>
+			</tr>
+			<tr style="background-color:#333; color:white;">
+				<td>2</td>
+				<td>Aisha</td>
+				<td>aisha@example.com</td>
+			</tr>
+		</table>
+
+	</form>
+	</div>
+	</center>
+		
+	
+
+
 </body>
 
 <script src="index.mjs" type="module"></script>
