@@ -35,6 +35,7 @@ async function fillLanguagesDropDown(allUsersInArray) {
 	languagesOfAllUsers = new Set(languagesOfAllUsers);
 
 	languagesDropDownEl.disabled = false;
+	languagesDropDownEl.innerHTML = `<option value="overall">Overall</option>`;
 	languagesOfAllUsers.forEach( (lang) => {
 		languagesDropDownEl.innerHTML += `<option value="${lang}">${lang}</option>`;
 	});
