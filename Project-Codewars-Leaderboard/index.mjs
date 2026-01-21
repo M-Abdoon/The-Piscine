@@ -14,15 +14,28 @@ async function setup () {
 	
 	submitUsersBtn.addEventListener("click", async (e)=> {
 		e.preventDefault();
-		renderTable();
 		const allUsersInArray = usersInput.value.split(",");
-		for(const username of allUsersInArray) {
-			await displayUser(username);
-		}
+		
+		renderTable();
+		await fillLanguagesDropDown(allUsersInArray);
+		await displayUsers(allUsersInArray);
 	});
 }
-function fillLanguagesDropDown() {
-	const languagesDropDown = document.getElementById("languagesDropDown");
+async function fillLanguagesDropDown(allUsersInArray) {
+	const usersTableEl = document.getElementById("usersTable");
+
+	for(const username of allUsersInArray) {
+		const userData = await getUserInfo(username);
+
+		
+
+		// usersTableEl.innerHTML += `<tr style="background-color:#333; color:white;">
+		// <td>${userData.username}</td>
+		// <td>${userData.name}</td>
+		// <td>${userData.ranks.overall.score}</td>
+		// </tr>`;
+	}
+	
 }
 
 function renderTable() {
@@ -35,16 +48,18 @@ function renderTable() {
 	</tr>`;
 }
 
-async function displayUser (username) {
+async function displayUsers (allUsersInArray) {
 	const usersTableEl = document.getElementById("usersTable");
 
-	const getDefUser = await getUserInfo(username);
+	for(const username of allUsersInArray) {
+		const userData = await getUserInfo(username);
 
-	usersTableEl.innerHTML += `<tr style="background-color:#333; color:white;">
-	<td>${getDefUser.username}</td>
-	<td>${getDefUser.name}</td>
-	<td>${getDefUser.ranks.overall.score}</td>
-	</tr>`;
+		usersTableEl.innerHTML += `<tr style="background-color:#333; color:white;">
+		<td>${userData.username}</td>
+		<td>${userData.name}</td>
+		<td>${userData.ranks.overall.score}</td>
+		</tr>`;
+	}
 }
 
 window.onload = setup;
