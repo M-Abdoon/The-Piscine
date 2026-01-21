@@ -23,11 +23,21 @@ async function setup () {
 }
 async function fillLanguagesDropDown(allUsersInArray) {
 	const languagesDropDownEl = document.getElementById("languagesDropDown");
+	let languagesOfAllUsers = [];
 
 	for(const username of allUsersInArray) {
 		const userData = await getUserInfo(username);
-		console.log(userData.ranks.languages);
-	}
+		const langs = Object.keys(userData.ranks.languages);
+		langs.forEach( (lang) => {
+			languagesOfAllUsers.push(lang);
+		});
+	};
+	languagesOfAllUsers = new Set(languagesOfAllUsers);
+
+	languagesDropDownEl.disabled = false;
+	languagesOfAllUsers.forEach( (lang) => {
+		languagesDropDownEl.innerHTML += `<option value="${lang}">${lang}</option>`;
+	});
 	
 }
 
