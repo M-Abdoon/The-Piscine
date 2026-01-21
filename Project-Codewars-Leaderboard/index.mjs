@@ -22,18 +22,11 @@ async function setup () {
 	});
 }
 async function fillLanguagesDropDown(allUsersInArray) {
-	const usersTableEl = document.getElementById("usersTable");
+	const languagesDropDownEl = document.getElementById("languagesDropDown");
 
 	for(const username of allUsersInArray) {
 		const userData = await getUserInfo(username);
-
-		
-
-		// usersTableEl.innerHTML += `<tr style="background-color:#333; color:white;">
-		// <td>${userData.username}</td>
-		// <td>${userData.name}</td>
-		// <td>${userData.ranks.overall.score}</td>
-		// </tr>`;
+		console.log(userData.ranks.languages);
 	}
 	
 }
