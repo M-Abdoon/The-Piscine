@@ -9,17 +9,27 @@ async function getUserInfo(username) {
 }
 
 async function setup () {
-	const submitUsersBtn=document.getElementById("submitUsers");
-	const usersInput    =document.getElementById("usersInput");
+	const submitUsersBtn		=	document.getElementById("submitUsers");
+	const usersInput			=	document.getElementById("usersInput").value;
+	const languagesDropDownEl	=	document.getElementById("languagesDropDown");
+	const loadingTextEl			=	document.getElementById("loadingText");
+	const allUsersInArray		=	usersInput.split(",");
 	
 	submitUsersBtn.addEventListener("click", async (e)=> {
 		e.preventDefault();
-		const allUsersInArray = usersInput.value.split(",");
-		
+		loadingTextEl.innerHTML = "Loading ...";
 		renderTable();
 		await fillLanguagesDropDown(allUsersInArray);
 		await displayUsers(allUsersInArray, "javascript");
+		loadingTextEl.innerHTML = "";
 	});
+
+	languagesDropDownEl.addEventListener("change", async () => {
+		loadingTextEl.innerHTML = "Loading ...";
+		renderTable();
+		await displayUsers(allUsersInArray, languagesDropDownEl.value);
+		loadingTextEl.innerHTML = "";
+	})
 }
 async function fillLanguagesDropDown(allUsersInArray) {
 	const languagesDropDownEl = document.getElementById("languagesDropDown");
@@ -28,6 +38,7 @@ async function fillLanguagesDropDown(allUsersInArray) {
 	for(const username of allUsersInArray) {
 		const userData = await getUserInfo(username);
 		const langs = Object.keys(userData.ranks.languages);
+
 		langs.forEach( (lang) => {
 			languagesOfAllUsers.push(lang);
 		});
@@ -43,11 +54,9 @@ async function fillLanguagesDropDown(allUsersInArray) {
 }
 
 function renderTable() {
-	const usersTableEl = document.getElementById("usersTable");
+	const usersTableBodyEl = document.getElementById("usersTableBody");
 
-	while (usersTableEl.rows.length > 1) {
-		usersTableEl.deleteRow(1);
-	}
+	usersTableBodyEl.innerHTML = "";
 }
 
 async function displayUsers (allUsersInArray, selectedLanguage) {
