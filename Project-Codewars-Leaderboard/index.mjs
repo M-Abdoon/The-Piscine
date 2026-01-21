@@ -20,9 +20,9 @@ async function setup () {
 			await displayUser(username);
 		}
 	});
-
-
-	console.log("hello");
+}
+function fillLanguagesDropDown() {
+	const languagesDropDown = document.getElementById("languagesDropDown");
 }
 
 function renderTable() {
