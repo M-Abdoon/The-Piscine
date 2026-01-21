@@ -18,7 +18,7 @@ async function setup () {
 		
 		renderTable();
 		await fillLanguagesDropDown(allUsersInArray);
-		await displayUsers(allUsersInArray);
+		await displayUsers(allUsersInArray, "javascript");
 	});
 }
 async function fillLanguagesDropDown(allUsersInArray) {
@@ -45,25 +45,41 @@ async function fillLanguagesDropDown(allUsersInArray) {
 function renderTable() {
 	const usersTableEl = document.getElementById("usersTable");
 
-	usersTableEl.innerHTML = `<tr style="background-color:#ccc; color:black;">
-	<td>UserName</td>
-	<td>Name</td>
-	<td>Score</td>
-	</tr>`;
+	while (usersTableEl.rows.length > 1) {
+		usersTableEl.deleteRow(1);
+	}
 }
 
-async function displayUsers (allUsersInArray) {
-	const usersTableEl = document.getElementById("usersTable");
+async function displayUsers (allUsersInArray, selectedLanguage) {
+	const usersTableBody = document.getElementById("usersTableBody");
+	let contentArray = [];
 
 	for(const username of allUsersInArray) {
 		const userData = await getUserInfo(username);
+		
+		const langScore = selectedLanguage === "overall"
+			? userData.ranks.overall?.score ?? 0 
+			: userData.ranks.languages[selectedLanguage]?.score ?? 0;
 
-		usersTableEl.innerHTML += `<tr style="background-color:#333; color:white;">
-		<td>${userData.username}</td>
-		<td>${userData.name}</td>
-		<td>${userData.ranks.overall.score}</td>
-		</tr>`;
+		if(langScore !== 0)
+		{
+			contentArray.push({
+			username: userData.username,
+			clan: userData.clan,
+			score: langScore
+			});
+		}
 	}
+
+	contentArray.sort((a, b) => b.score - a.score);
+
+	contentArray.forEach ( (userData) => {
+		usersTableBody.innerHTML += `<tr style="background-color:#333; color:white;">
+			<td>${userData.username}</td>
+			<td>${userData.clan}</td>
+			<td>${userData.score}</td>
+			</tr>`;
+	});
 }
 
 window.onload = setup;
