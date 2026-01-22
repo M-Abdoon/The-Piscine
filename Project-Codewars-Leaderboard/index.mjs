@@ -6,9 +6,13 @@
 async function getUserInfo(username) {
 	try {
 		const url = await fetch(`https://www.codewars.com/api/v1/users/${username}`);
-		if(!url.ok)	return null;	
+		if(!url.ok)	{
+			msgToUser.innerHTML += `"${username}" does not exist!</br>`;
+			return null;
+		}
 		return await url.json();
 	} catch (error){
+		msgToUser.innerHTML = "Bad request! Please make sure you are connected to the Internet!";
 		return null;
 	}
 }
@@ -18,6 +22,7 @@ async function setup () {
 	const usersInput			=	document.getElementById("usersInput");
 	const languagesDropDownEl	=	document.getElementById("languagesDropDown");
 	const loadingTextEl			=	document.getElementById("loadingText");
+	const msgToUser				=	document.getElementById("msgToUser");
 
 	let allUsersFetchedData = [];
 	
@@ -84,6 +89,7 @@ function renderTable() {
 	const usersTableBodyEl = document.getElementById("usersTableBody");
 
 	usersTableBodyEl.innerHTML = "";
+	msgToUser.innerHTML = "";
 }
 
 async function displayUsers (allUsersInArray, selectedLanguage) {
