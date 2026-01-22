@@ -4,8 +4,10 @@
 // works.
 
 async function getUserInfo(username) {
-  const url = await fetch(`https://www.codewars.com/api/v1/users/${username}`);
-  return await url.json();
+	const url = await fetch(`https://www.codewars.com/api/v1/users/${username}`);
+	if(!url.ok)
+		return false;	
+	return await url.json();
 }
 
 async function setup () {
@@ -20,7 +22,7 @@ async function setup () {
 		const allUsersInArray		=	usersInput.value.split(",");
 		renderTable();
 		await fillLanguagesDropDown(allUsersInArray);
-		await displayUsers(allUsersInArray, "javascript");
+		await displayUsers(allUsersInArray, "overall");
 		loadingTextEl.innerHTML = "";
 	});
 
