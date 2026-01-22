@@ -57,7 +57,6 @@ async function fetchAllUsersData (listOfUsernames) {
 	return allUsersFetchedData;
 }
 
-
 async function fillLanguagesDropDown(allUsersDataInArray) {
 	const languagesDropDownEl = document.getElementById("languagesDropDown");
 	let languagesOfAllUsers = [];
@@ -110,8 +109,16 @@ async function displayUsers (allUsersInArray, selectedLanguage) {
 
 	contentArray.sort((a, b) => b.score - a.score);
 
-	contentArray.forEach ( (userData) => {
-		usersTableBody.innerHTML += `<tr style="background-color:#333; color:white;">
+	contentArray.forEach ( (userData, i) => {
+
+		let bgColor = "#333";
+		let color	= "white";
+		if(i == 0) {
+			bgColor = "gold";
+			color	= "black";
+		}
+
+		usersTableBody.innerHTML += `<tr style="background-color:${bgColor}; color:${color};">
 			<td>${userData.username}</td>
 			<td>${userData.clan}</td>
 			<td>${userData.score}</td>
