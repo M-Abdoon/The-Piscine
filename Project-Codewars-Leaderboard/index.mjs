@@ -4,10 +4,13 @@
 // works.
 
 async function getUserInfo(username) {
-	const url = await fetch(`https://www.codewars.com/api/v1/users/${username}`);
-	if(!url.ok)
-		return false;	
-	return await url.json();
+	try {
+		const url = await fetch(`https://www.codewars.com/api/v1/users/${username}`);
+		if(!url.ok)	return null;	
+		return await url.json();
+	} catch (error){
+		return null;
+	}
 }
 
 async function setup () {
@@ -15,37 +18,59 @@ async function setup () {
 	const usersInput			=	document.getElementById("usersInput");
 	const languagesDropDownEl	=	document.getElementById("languagesDropDown");
 	const loadingTextEl			=	document.getElementById("loadingText");
+
+	let allUsersFetchedData = [];
 	
 	submitUsersBtn.addEventListener("click", async (e)=> {
 		e.preventDefault();
 		loadingTextEl.innerHTML = "Loading ...";
-		const allUsersInArray		=	usersInput.value.split(",");
+		const allUsersInArray	=	usersInput.value;
+		
 		renderTable();
-		await fillLanguagesDropDown(allUsersInArray);
-		await displayUsers(allUsersInArray, "overall");
+		allUsersFetchedData = await fetchAllUsersData(allUsersInArray);
+		fillLanguagesDropDown(allUsersFetchedData);
+		displayUsers(allUsersFetchedData, "overall");
 		loadingTextEl.innerHTML = "";
 	});
 
 	languagesDropDownEl.addEventListener("change", async () => {
 		loadingTextEl.innerHTML = "Loading ...";
-		const allUsersInArray		=	usersInput.value.split(",");
+		const allUsersInArray		=	usersInput.value;
 		renderTable();
-		await displayUsers(allUsersInArray, languagesDropDownEl.value);
+		displayUsers(allUsersFetchedData, languagesDropDownEl.value);
 		loadingTextEl.innerHTML = "";
-	})
+	});
 }
-async function fillLanguagesDropDown(allUsersInArray) {
-	const languagesDropDownEl = document.getElementById("languagesDropDown");
-	let languagesOfAllUsers = [];
+
+async function fetchAllUsersData (listOfUsernames) {
+	const allUsersInArray = listOfUsernames.split(",");
+	let allUsersFetchedData = [];
 
 	for(const username of allUsersInArray) {
 		const userData = await getUserInfo(username);
+
+		if ( !userData) continue;
+	
+		allUsersFetchedData.push(userData);
+	}
+	
+	return allUsersFetchedData;
+}
+
+
+async function fillLanguagesDropDown(allUsersDataInArray) {
+	const languagesDropDownEl = document.getElementById("languagesDropDown");
+	let languagesOfAllUsers = [];
+
+	allUsersDataInArray.forEach((userData) =>  {
+
 		const langs = Object.keys(userData.ranks.languages);
 
 		langs.forEach( (lang) => {
 			languagesOfAllUsers.push(lang);
 		});
-	};
+	});
+
 	languagesOfAllUsers = new Set(languagesOfAllUsers);
 
 	languagesDropDownEl.disabled = false;
@@ -66,9 +91,7 @@ async function displayUsers (allUsersInArray, selectedLanguage) {
 	const usersTableBody = document.getElementById("usersTableBody");
 	let contentArray = [];
 
-	for(const username of allUsersInArray) {
-		const userData = await getUserInfo(username);
-		console.log(`ddd${userData}`);
+	allUsersInArray.forEach((userData) => {
 		const langScore = selectedLanguage === "overall"
 			? userData.ranks.overall?.score ?? 0 
 			: userData.ranks.languages[selectedLanguage]?.score ?? 0;
@@ -83,7 +106,7 @@ async function displayUsers (allUsersInArray, selectedLanguage) {
 			score: langScore
 			});
 		}
-	}
+	});
 
 	contentArray.sort((a, b) => b.score - a.score);
 
