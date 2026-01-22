@@ -10,14 +10,14 @@ async function getUserInfo(username) {
 
 async function setup () {
 	const submitUsersBtn		=	document.getElementById("submitUsers");
-	const usersInput			=	document.getElementById("usersInput").value;
+	const usersInput			=	document.getElementById("usersInput");
 	const languagesDropDownEl	=	document.getElementById("languagesDropDown");
 	const loadingTextEl			=	document.getElementById("loadingText");
-	const allUsersInArray		=	usersInput.split(",");
 	
 	submitUsersBtn.addEventListener("click", async (e)=> {
 		e.preventDefault();
 		loadingTextEl.innerHTML = "Loading ...";
+		const allUsersInArray		=	usersInput.value.split(",");
 		renderTable();
 		await fillLanguagesDropDown(allUsersInArray);
 		await displayUsers(allUsersInArray, "javascript");
@@ -26,6 +26,7 @@ async function setup () {
 
 	languagesDropDownEl.addEventListener("change", async () => {
 		loadingTextEl.innerHTML = "Loading ...";
+		const allUsersInArray		=	usersInput.value.split(",");
 		renderTable();
 		await displayUsers(allUsersInArray, languagesDropDownEl.value);
 		loadingTextEl.innerHTML = "";
@@ -65,16 +66,18 @@ async function displayUsers (allUsersInArray, selectedLanguage) {
 
 	for(const username of allUsersInArray) {
 		const userData = await getUserInfo(username);
-		
+		console.log(`ddd${userData}`);
 		const langScore = selectedLanguage === "overall"
 			? userData.ranks.overall?.score ?? 0 
 			: userData.ranks.languages[selectedLanguage]?.score ?? 0;
+
+		const userClan = userData.clan == null ? "" : userData.clan;
 
 		if(langScore !== 0)
 		{
 			contentArray.push({
 			username: userData.username,
-			clan: userData.clan,
+			clan: userClan,
 			score: langScore
 			});
 		}
